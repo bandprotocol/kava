@@ -9,6 +9,8 @@ import (
 const (
 	// TypeMsgPostPrice type of PostPrice msg
 	TypeMsgPostPrice = "post_price"
+	// TypeMsgReportPrice type of Report price msg
+	TypeMsgReportPrice = "report_price"
 )
 
 // ensure Msg interface compliance at compile time
@@ -66,5 +68,48 @@ func (msg MsgPostPrice) ValidateBasic() sdk.Error {
 		return sdk.ErrInternal("invalid (negative) price")
 	}
 	// TODO check coin denoms
+	return nil
+}
+
+// MsgReportPrice struct representing a posted price message.
+// Used by oracles to input prices to the pricefeed
+type MsgReportPrice struct {
+	From  sdk.AccAddress `json:"from" yaml:"from"`   // client that sent in this address
+	Proof Proof          `json:"proof" yaml:"proof"` // asset code used by exchanges/api
+}
+
+// NewMsgPostPrice creates a new report msg
+func NewMsgReportPrice(
+	from sdk.AccAddress,
+	proof Proof,
+) MsgReportPrice {
+	return MsgReportPrice{
+		From:  from,
+		Proof: proof,
+	}
+}
+
+// Route Implements Msg.
+func (msg MsgReportPrice) Route() string { return RouterKey }
+
+// Type Implements Msg
+func (msg MsgReportPrice) Type() string { return TypeMsgReportPrice }
+
+// GetSignBytes Implements Msg.
+func (msg MsgReportPrice) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(msg)
+	return sdk.MustSortJSON(bz)
+}
+
+// GetSigners Implements Msg.
+func (msg MsgReportPrice) GetSigners() []sdk.AccAddress {
+	return []sdk.AccAddress{msg.From}
+}
+
+// ValidateBasic does a simple validation check that doesn't require access to any other information.
+func (msg MsgReportPrice) ValidateBasic() sdk.Error {
+	if msg.From.Empty() {
+		return sdk.ErrInternal("invalid (empty) from address")
+	}
 	return nil
 }

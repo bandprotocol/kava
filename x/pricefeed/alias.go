@@ -72,6 +72,7 @@ type (
 	PostedPrice             = types.PostedPrice
 	SortDecs                = types.SortDecs
 	MsgPostPrice            = types.MsgPostPrice
+	MsgReportPrice          = types.MsgReportPrice
 	Params                  = types.Params
 	QueryWithMarketIDParams = types.QueryWithMarketIDParams
 	Keeper                  = keeper.Keeper

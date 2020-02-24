@@ -147,6 +147,25 @@ func (k Keeper) SetCurrentPrices(ctx sdk.Context, marketID string) sdk.Error {
 	return nil
 }
 
+func (k Keeper) SetCurrentPriceByBand(ctx sdk.Context, marketID string, price sdk.Dec) sdk.Error {
+	_, ok := k.GetMarket(ctx, marketID)
+	if !ok {
+		return types.ErrInvalidMarket(k.codespace, marketID)
+	}
+
+	store := ctx.KVStore(k.key)
+	currentPrice := types.CurrentPrice{
+		MarketID: marketID,
+		Price:    price,
+	}
+
+	store.Set(
+		[]byte(types.CurrentPricePrefix+marketID), k.cdc.MustMarshalBinaryBare(currentPrice),
+	)
+
+	return nil
+}
+
 // CalculateMedianPrice calculates the median prices for the input prices.
 func (k Keeper) CalculateMedianPrice(ctx sdk.Context, prices []types.CurrentPrice) sdk.Dec {
 	l := len(prices)

@@ -22,6 +22,12 @@ const (
 	// CurrentPricePrefix prefix for the current price of an asset
 	CurrentPricePrefix = StoreKey + ":currentprice:"
 
+	// OracleStateHashPrefix prefix for the oracle state hash
+	OracleStateHashPrefix = StoreKey + ":oraclestate"
+
+	// BandValidatorsPrefix prefix for the list of public key of bandchain validators
+	BandValidatorsPrefix = StoreKey + ":bandvalidators"
+
 	// MarketPrefix Prefix for the assets in the pricefeed system
 	MarketPrefix = StoreKey + ":markets"
 
