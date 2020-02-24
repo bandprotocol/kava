@@ -73,10 +73,8 @@ func HandleMsgReportPrice(
 		return sdk.ErrInvalidCoins("Invalid params").Result()
 	}
 	price := binary.BigEndian.Uint64(msg.Proof.OracleDataProof.Data[:8])
-	decPrice, err := sdk.NewDecFromStr(fmt.Sprintf("%.2f", float64(price)/100.0))
-	if err != nil {
-		return err.Result()
-	}
+	decPrice := sdk.NewDecWithPrec(int64(price), 2)
+
 	// TODO: find market id that match our parameter
 	switch uint8(msg.Proof.OracleDataProof.Params[3]) {
 	case 4:
